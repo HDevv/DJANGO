@@ -46,3 +46,8 @@ def liste_factures(request):
         'clients': clients,
         'client_id': client_id,  # str
     })
+
+# TEST pour afficher uniquement les factures payées 
+# def liste_factures(request):
+#     factures = Facture.objects.payees()  # pour tester
+#     return render(request, 'factures/facture_list.html', {'factures': factures})

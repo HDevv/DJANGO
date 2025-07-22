@@ -79,3 +79,18 @@ class FactureCreateViewTest(BaseFactureTest):
         form = response.context['form']
         self.assertFalse(form.is_valid())
         self.assertIn('numero', form.errors)
+
+
+# TESTS DU MANAGER 
+class FactureManagerTest(TestCase):
+    def setUp(self):
+        client = Client.objects.create(nom="Test")
+        cat = Categorie.objects.create(nom="TestCat")
+        Facture.objects.create(numero="F001", client=client, date_emission=date.today(), montant=100, tva=20, categorie=cat, payee=True)
+        Facture.objects.create(numero="F002", client=client, date_emission=date.today(), montant=100, tva=20, categorie=cat, payee=False)
+
+    def test_payees(self):
+        self.assertEqual(Facture.objects.payees().count(), 1)
+
+    def test_non_payees(self):
+        self.assertEqual(Facture.objects.non_payees().count(), 1)

@@ -1,67 +1,72 @@
 {% extends "factures/base.html" %}
 {% block title %}Liste des Factures{% endblock %}
+
 {% block content %}
-<h2 class="mb-3">Liste des factures</h2>
-<a href="{% url 'creer_facture' %}" class="btn btn-green mb-3">+ Nouvelle facture</a>
+<div class="container mt-4">
+    <h2 class="mb-4">Liste des factures</h2>
 
-<form method="get" class="mb-3">
-    <label for="client">Filtrer par client :</label>
-    <select name="client" id="client">
-        <option value="">-- Tous les clients --</option>
-        {% for client in clients %}
-        {% if client_id == client.id|stringformat:"s" %}
-        <option value="{{ client.id }}" selected>{{ client.nom }}</option>
-        {% else %}
-        <option value="{{ client.id }}">{{ client.nom }}</option>
-        {% endif %}
-        {% endfor %}
-    </select>
-    <button type="submit">Filtrer</button>
-</form>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="{% url 'creer_facture' %}" class="btn btn-success">+ Nouvelle facture</a>
 
-
-
-<table class="table table-bordered table-hover">
-    <thead class="table-success">
-        <tr>
-            <th>Numéro</th>
-            <th>Client</th>
-            <th>Date</th>
-            <th>Montant</th>
-            <th>TTC</th>
-            <th>Catégorie</th>
-            <th>Actions</th>
-            <th>Payée ?</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for facture in factures %}
-        <tr>
-            <td>{{ facture.numero }}</td>
-            <td>{{ facture.client }}</td>
-            <td>{{ facture.date_emission }}</td>
-            <td>{{ facture.montant }} €</td>
-            <td>{{ facture.montant_ttc|floatformat:2 }} €</td>
-            <td>{{ facture.categorie }}</td>
-            <td>
-                <a href="{% url 'detail_facture' facture.pk %}" class="btn btn-sm btn-outline-success">Voir</a>
-                <a href="{% url 'modifier_facture' facture.pk %}" class="btn btn-sm btn-outline-primary">Modifier</a>
-                <a href="{% url 'supprimer_facture' facture.pk %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
-            </td>
-            <td>
-                {% if facture.payee %}
-                Réglée
+        <form method="get" class="d-flex align-items-center">
+            <label for="client" class="form-label me-2 mb-0">Filtrer par client :</label>
+            <select name="client" id="client" class="form-select me-2" style="width: auto;">
+                <option value="">-- Tous les clients --</option>
+                {% for client in clients %}
+                {% if client_id == client.id|stringformat:"s" %}
+                <option value="{{ client.id }}" selected>{{ client.nom }}</option>
                 {% else %}
-                En attente
+                <option value="{{ client.id }}">{{ client.nom }}</option>
                 {% endif %}
-            </td>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline-primary">Filtrer</button>
+        </form>
+    </div>
 
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6">Aucune facture enregistrée.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table class="table table-bordered table-hover">
+        <thead class="table-success">
+            <tr>
+                <th>Numéro</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>TTC</th>
+                <th>Catégorie</th>
+                <th>Actions</th>
+                <th>Payée ?</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for facture in factures %}
+            <tr>
+                <td>{{ facture.numero }}</td>
+                <td>{{ facture.client }}</td>
+                <td>{{ facture.date_emission }}</td>
+                <td>{{ facture.montant }} €</td>
+                <td>{{ facture.montant_ttc|floatformat:2 }} €</td>
+                <td>{{ facture.categorie }}</td>
+                <td>
+                    <a href="{% url 'detail_facture' facture.pk %}" class="btn btn-sm btn-outline-success">Voir</a>
+                    <a href="{% url 'modifier_facture' facture.pk %}"
+                        class="btn btn-sm btn-outline-primary">Modifier</a>
+                    <a href="{% url 'supprimer_facture' facture.pk %}"
+                        class="btn btn-sm btn-outline-danger">Supprimer</a>
+                </td>
+                <td>
+                    {% if facture.payee %}
+                    <span class="badge bg-success">Réglée</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">En attente</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">Aucune facture enregistrée.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

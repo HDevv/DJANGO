@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Facture, Client, Categorie
+from .models import Facture, Client, Categorie, FactureLog
 
 @admin.action(description="Marquer comme payée")
 def paid(modeladmin, request, queryset):
@@ -21,3 +21,8 @@ class ClientAdmin(admin.ModelAdmin):
 class CategorieAdmin(admin.ModelAdmin):
     list_display = ('nom',)
     search_fields = ('nom',)
+
+@admin.register(FactureLog)
+class FactureLogAdmin(admin.ModelAdmin):
+    list_display = ['facture', 'created_at', 'ip_address', 'path']
+    readonly_fields = ['facture', 'created_at', 'ip_address', 'path', 'user_agent']

@@ -1,7 +1,5 @@
 from django.db import models
 
-from django.db import models
-
 class Categorie(models.Model):
     nom = models.CharField(max_length=100, unique=True)
 
@@ -16,6 +14,20 @@ class Client(models.Model):
 
     def __str__(self):
         return self.nom
+    
+class FactureManager(models.Manager):
+    def get_queryset(self):
+        return FactureQuerySet(self.model, using=self._db)
+
+    def payees(self):
+        return self.get_queryset().payees()
+
+    def non_payees(self):
+        return self.get_queryset().non_payees()
+
+    def pour_client(self, client_id):
+        return self.get_queryset().pour_client(client_id)
+
 
 class Facture(models.Model):
     numero = models.CharField(max_length=20, unique=True)
@@ -26,6 +38,7 @@ class Facture(models.Model):
     categorie = models.ForeignKey(Categorie, on_delete=models.SET_NULL, null=True, related_name='factures')
     description = models.TextField(blank=True)
     payee = models.BooleanField(default=False)
+    objects = FactureManager() 
 
     # ajouter taxes et ttc 
 
@@ -38,3 +51,28 @@ class Facture(models.Model):
 
     def __str__(self):
         return f"Facture {self.numero} - {self.client}"
+    
+
+# MIDDLEWARE 
+class FactureLog(models.Model):
+    facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name='logs')
+    created_at = models.DateTimeField(auto_now_add=True)
+    path = models.CharField(max_length=255)  # l’URL appelée
+    user_agent = models.TextField(blank=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Log de création pour {self.facture} à {self.created_at}"
+
+
+class FactureQuerySet(models.QuerySet):
+    def payees(self):
+        return self.filter(payee=True)
+
+    def non_payees(self):
+        return self.filter(payee=False)
+
+    def pour_client(self, client_id):
+        return self.filter(client__id=client_id)
+    
+
