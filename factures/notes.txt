@@ -1,0 +1,5 @@
+accès à l'interface ADMIN : 
+
+admin 
+admin@admin.com 
+mdp : admin 

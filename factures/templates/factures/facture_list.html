@@ -1,0 +1,67 @@
+{% extends "factures/base.html" %}
+{% block title %}Liste des Factures{% endblock %}
+{% block content %}
+<h2 class="mb-3">Liste des factures</h2>
+<a href="{% url 'creer_facture' %}" class="btn btn-green mb-3">+ Nouvelle facture</a>
+
+<form method="get" class="mb-3">
+    <label for="client">Filtrer par client :</label>
+    <select name="client" id="client">
+        <option value="">-- Tous les clients --</option>
+        {% for client in clients %}
+        {% if client_id == client.id|stringformat:"s" %}
+        <option value="{{ client.id }}" selected>{{ client.nom }}</option>
+        {% else %}
+        <option value="{{ client.id }}">{{ client.nom }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <button type="submit">Filtrer</button>
+</form>
+
+
+
+<table class="table table-bordered table-hover">
+    <thead class="table-success">
+        <tr>
+            <th>Numéro</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Montant</th>
+            <th>TTC</th>
+            <th>Catégorie</th>
+            <th>Actions</th>
+            <th>Payée ?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for facture in factures %}
+        <tr>
+            <td>{{ facture.numero }}</td>
+            <td>{{ facture.client }}</td>
+            <td>{{ facture.date_emission }}</td>
+            <td>{{ facture.montant }} €</td>
+            <td>{{ facture.montant_ttc|floatformat:2 }} €</td>
+            <td>{{ facture.categorie }}</td>
+            <td>
+                <a href="{% url 'detail_facture' facture.pk %}" class="btn btn-sm btn-outline-success">Voir</a>
+                <a href="{% url 'modifier_facture' facture.pk %}" class="btn btn-sm btn-outline-primary">Modifier</a>
+                <a href="{% url 'supprimer_facture' facture.pk %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+            </td>
+            <td>
+                {% if facture.payee %}
+                Réglée
+                {% else %}
+                En attente
+                {% endif %}
+            </td>
+
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Aucune facture enregistrée.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

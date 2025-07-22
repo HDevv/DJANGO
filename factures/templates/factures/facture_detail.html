@@ -1,0 +1,23 @@
+{% extends "factures/base.html" %}
+{% block title %}Détail Facture{% endblock %}
+{% block content %}
+<h2>Détail de la facture</h2>
+<ul class="list-group mt-3 mb-3">
+    <li class="list-group-item"><strong>Numéro :</strong> {{ facture.numero }}</li>
+    <li class="list-group-item"><strong>Client :</strong> {{ facture.client }}</li>
+    <li class="list-group-item"><strong>Date :</strong> {{ facture.date_emission }}</li>
+    <li class="list-group-item"><strong>Montant :</strong> {{ facture.montant }} €</li>
+    <li class="list-group-item">
+        <strong>Taux de TVA :</strong> {{ facture.tva }} %
+    </li>
+    <li class="list-group-item">
+        <strong>Montant TTC :</strong> {{ facture.montant_ttc|floatformat:2 }} €
+    </li>
+
+    <li class="list-group-item"><strong>Catégorie :</strong> {{ facture.categorie }}</li>
+    <li class="list-group-item"><strong>Description :</strong> {{ facture.description }}</li>
+    <li class="list-group-item"><strong>Payée :</strong> {% if facture.payee %}Oui{% else %}Non{% endif %}</li>
+</ul>
+<a href="{% url 'modifier_facture' facture.pk %}" class="btn btn-primary">Modifier</a>
+<a href="{% url 'liste_factures' %}" class="btn btn-secondary">Retour</a>
+{% endblock %}
