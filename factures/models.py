@@ -6,6 +6,7 @@ class Categorie(models.Model):
     def __str__(self):
         return self.nom
 
+# CLIENT
 class Client(models.Model):
     nom = models.CharField(max_length=255)
     email = models.EmailField(blank=True)
@@ -14,7 +15,8 @@ class Client(models.Model):
 
     def __str__(self):
         return self.nom
-    
+
+# FORMULAIRE FACTURES     
 class FactureManager(models.Manager):
     def get_queryset(self):
         return FactureQuerySet(self.model, using=self._db)
@@ -28,7 +30,7 @@ class FactureManager(models.Manager):
     def pour_client(self, client_id):
         return self.get_queryset().pour_client(client_id)
 
-
+# FACTURE 
 class Facture(models.Model):
     numero = models.CharField(max_length=20, unique=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='factures')
@@ -64,7 +66,7 @@ class FactureLog(models.Model):
     def __str__(self):
         return f"Log de création pour {self.facture} à {self.created_at}"
 
-
+# QUERY SET 
 class FactureQuerySet(models.QuerySet):
     def payees(self):
         return self.filter(payee=True)

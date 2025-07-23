@@ -5,7 +5,7 @@ class LogFactureCreationMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
         if request.method == "POST" and request.path == "/facture/ajouter/":
 
-            # Récupère la dernière facture ajoutée
+            # Récupère dernière facture ajoutée
             facture = Facture.objects.order_by('-id').first()
 
             # Vérifie si elle a été ajoutée maintenant (pas une redite)
